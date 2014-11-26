@@ -97,6 +97,7 @@ GEM
     nokogumbo (1.1.12)
       nokogiri
     ntlm-http (0.1.1)
+    pg (0.17.0)
     phrasie (0.1.5)
     polyglot (0.3.5)
     pry (0.9.12.6)
@@ -181,6 +182,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-rails
   mechanize
+  pg
   pismo!
   pry
   rails (= 4.0.1)
