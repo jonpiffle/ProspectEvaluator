@@ -1,0 +1,53 @@
+<%- model_class = Player -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th><%= model_class.human_attribute_name(:name) %></th>
+      <th><%= model_class.human_attribute_name(:position) %></th>
+      <th><%= model_class.human_attribute_name(:hometown) %></th>
+      <th><%= model_class.human_attribute_name(:college_class) %></th>
+      <th><%= model_class.human_attribute_name(:reach) %></th>
+      <th><%= model_class.human_attribute_name(:wingspan) %></th>
+      <th><%= model_class.human_attribute_name(:age) %></th>
+      <th><%= model_class.human_attribute_name(:date_of_birth) %></th>
+      <th><%= model_class.human_attribute_name(:college) %></th>
+      <th><%= model_class.human_attribute_name(:height) %></th>
+      <th><%= model_class.human_attribute_name(:weight) %></th>
+      <th><%= model_class.human_attribute_name(:espn_overall_rank) %></th>
+      <th><%= model_class.human_attribute_name(:espn_position_rank) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @players.each do |player| %>
+      <tr>
+        <td><%= image_tag player.photo_url %></td>
+        <td><%= link_to player.name, player_path(player) %></td>
+        <td><%= player.position %></td>
+        <td><%= player.hometown %></td>
+        <td><%= player.college_class %></td>
+        <td><%= player.reach %></td>
+        <td><%= player.wingspan %></td>
+        <td><%= player.age %></td>
+        <td><%= player.date_of_birth %></td>
+        <td><%= player.college %></td>
+        <td><%= player.height %></td>
+        <td><%= player.weight %></td>
+        <td><%= player.espn_overall_rank %></td>
+        <td><%= player.espn_position_rank %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_player_path(player), :class => 'btn btn-mini' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_player_path,
+            :class => 'btn btn-primary' %>

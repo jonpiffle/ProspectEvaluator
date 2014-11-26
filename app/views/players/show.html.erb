@@ -1,0 +1,96 @@
+<%- model_class = Player -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:photo_url) %>:</strong></dt>
+  <dd><%= image_tag @player.photo_url %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:name) %>:</strong></dt>
+  <dd><%= @player.name %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:position) %>:</strong></dt>
+  <dd><%= @player.position %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:hometown) %>:</strong></dt>
+  <dd><%= @player.hometown %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:college_class) %>:</strong></dt>
+  <dd><%= @player.college_class %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:reach) %>:</strong></dt>
+  <dd><%= @player.reach %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:wingspan) %>:</strong></dt>
+  <dd><%= @player.wingspan %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:age) %>:</strong></dt>
+  <dd><%= @player.age %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:date_of_birth) %>:</strong></dt>
+  <dd><%= @player.date_of_birth %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:college) %>:</strong></dt>
+  <dd><%= @player.college %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:height) %>:</strong></dt>
+  <dd><%= @player.height %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:weight) %>:</strong></dt>
+  <dd><%= @player.weight %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:espn_overall_rank) %>:</strong></dt>
+  <dd><%= @player.espn_overall_rank %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:espn_position_rank) %>:</strong></dt>
+  <dd><%= @player.espn_position_rank %></dd>
+</dl>
+
+<div class="articles">
+    <h2>News</h2>
+    <table>
+      <tbody>
+      <% @news.each do |news| %>
+          <tr>
+            <td valign="top">
+              <span class="sentiment"><%=news.sentiment_score%></span><br>
+              <a href="<%=news.url%>"><%=news.title%></a><br>
+              <span class="url"><%=news.url%></span><br>
+              <span class="source"><%=news.source%></span><br>
+              <span class="desc"><%=news.description%></span><br><br>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table> 
+</div>
+
+<div class="tweets">
+    <h2>Tweets</h2>
+    <table>
+      <tbody>
+      <% @tweets.each do |tweet| %>
+          <tr>
+            <td valign="top">
+              <span><%=tweet.sentiment_score%> <%=tweet.text%></span><br><br>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table> 
+</div>
+
+<div class="tweets">
+    <h2>Tweets About</h2>
+    <table>
+      <tbody>
+      <% @tweet_abouts.each do |tweet| %>
+          <tr>
+            <td valign="top">
+              <span><%=tweet.sentiment_score%> <%=tweet.text%></span><br><br>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table> 
+</div>
+
+<div class="form-actions">
+  <%= link_to t('.back', :default => t("helpers.links.back")),
+              players_path, :class => 'btn'  %>
+  <%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_player_path(@player), :class => 'btn' %>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              player_path(@player),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>
+</div>
