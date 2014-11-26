@@ -35,7 +35,7 @@ gem 'jbuilder', '~> 1.2'
 
 
 gem "therubyracer"
-#gem "less-rails"
+gem "less-rails"
 gem "twitter-bootstrap-rails"
 gem "mechanize"
 gem "pry"
