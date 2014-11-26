@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141126195320) do
+ActiveRecord::Schema.define(version: 20141126202317) do
 
   create_table "news", force: true do |t|
     t.string   "url"
@@ -49,6 +49,12 @@ ActiveRecord::Schema.define(version: 20141126195320) do
     t.string   "name"
     t.string   "twitter_handle"
     t.text     "keywords"
+    t.float    "news_sentiment"
+    t.float    "tweet_sentiment"
+    t.float    "tweet_about_sentiment"
+    t.integer  "news_sentiment_rank"
+    t.integer  "tweet_sentiment_rank"
+    t.integer  "tweet_about_sentiment_rank"
   end
 
   create_table "tweet_abouts", force: true do |t|

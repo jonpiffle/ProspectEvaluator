@@ -1,51 +1,99 @@
 <%- model_class = Player -%>
 <div class="page-header">
-  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+  <h1><%=t '.title', :default => @player.name.titleize %></h1>
 </div>
 
-<dl class="dl-horizontal">
-  <dt><strong><%= model_class.human_attribute_name(:photo_url) %>:</strong></dt>
-  <dd><%= image_tag @player.photo_url %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:name) %>:</strong></dt>
-  <dd><%= @player.name %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:position) %>:</strong></dt>
-  <dd><%= @player.position %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:hometown) %>:</strong></dt>
-  <dd><%= @player.hometown %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:college_class) %>:</strong></dt>
-  <dd><%= @player.college_class %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:reach) %>:</strong></dt>
-  <dd><%= @player.reach %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:wingspan) %>:</strong></dt>
-  <dd><%= @player.wingspan %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:age) %>:</strong></dt>
-  <dd><%= @player.age %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:date_of_birth) %>:</strong></dt>
-  <dd><%= @player.date_of_birth %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:college) %>:</strong></dt>
-  <dd><%= @player.college %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:height) %>:</strong></dt>
-  <dd><%= @player.height %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:weight) %>:</strong></dt>
-  <dd><%= @player.weight %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:espn_overall_rank) %>:</strong></dt>
-  <dd><%= @player.espn_overall_rank %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:espn_position_rank) %>:</strong></dt>
-  <dd><%= @player.espn_position_rank %></dd>
-</dl>
+<div class="row">
+  <div class="span1">
+    <%= image_tag @player.photo_url %>
+  </div>
+
+  <div class="span11">
+    <div style="font-size:24px">
+    <%= @player.position %> | <%= @player.height %>, <%= @player.weight %> | <%= @player.college %>
+    </div>
+
+    <br>
+    <div class="pull-left">
+      <strong><%= model_class.human_attribute_name(:hometown) %>:</strong>
+      <%= @player.hometown %><br>
+      <strong><%= model_class.human_attribute_name(:college_class) %>:</strong>
+      <%= @player.college_class %><br>
+      <strong><%= model_class.human_attribute_name(:date_of_birth) %>:</strong>
+      <%= @player.date_of_birth %><br>
+      <strong><%= model_class.human_attribute_name(:age) %>:</strong>
+      <%= @player.age %>
+    </div>
+
+    <div class="pull-left offset1">
+      <strong><%= model_class.human_attribute_name(:reach) %>:</strong>
+      <%= @player.reach %><br>
+      <strong><%= model_class.human_attribute_name(:wingspan) %>:</strong>
+      <%= @player.wingspan %><br>
+      <strong><%= model_class.human_attribute_name(:espn_overall_rank) %>:</strong>
+      <%= @player.espn_overall_rank %><br>
+      <strong><%= model_class.human_attribute_name(:espn_position_rank) %>:</strong>
+      <%= @player.espn_position_rank %>
+    </div>
+
+  </div>
+</div>
+
+<br>
+<div class="row">
+<div class="sentiment span4">
+  <h3>Sentiment Summary</h3>
+  <table class="table" style="font-size:20px;">
+    <tr>
+      <td>In the News: </td>
+      <td style="color:<%=@player.get_color(@player.news_sentiment)%>"> <%= @player.get_sign(@player.news_sentiment) %><%= @player.news_sentiment.round(2) %></td>
+      <td>Rank: </td>
+      <td><%= @player.news_sentiment_rank %></td>
+    </tr>
+    <tr>
+      <td>On Twitter: </td>
+      <td style="color:<%=@player.get_color(@player.tweet_about_sentiment)%>"> <%= @player.get_sign(@player.tweet_about_sentiment) %><%= @player.tweet_about_sentiment.round(2) %></td>
+      <td>Rank: </td>
+      <td><%= @player.tweet_about_sentiment_rank %></td>
+    </tr>
+    <tr>
+      <td>His Twitter: </td>
+      <td style="color:<%=@player.get_color(@player.tweet_sentiment)%>"> <%= @player.get_sign(@player.tweet_sentiment) %><%= @player.tweet_sentiment.round(2) %></td>
+      <td>Rank: </td>
+      <td><%= @player.tweet_sentiment_rank %></td>
+    </tr>
+  </table>
+</div>
+
+<div class="keywords span8">
+  <h3>Keywords in the News</h3>
+  <div class="pull-left">
+  <% if @player.keyword_array != nil %>
+  <% @player.keyword_array[0...10].each_with_index do |keyword, i| %>
+    <%=i+1%>. <%=keyword[0]%><br>
+  <% end %>
+  <% end %>
+  </div>
+  <% if @player.keyword_array.count > 10 %>
+  <div class="pull-left" style="padding-left:30px;">
+  <% @player.keyword_array[10...20].each_with_index do |keyword, i| %>
+    <%=i+11%>. <%=keyword[0]%><br>
+  <% end %>
+  </div>
+  <% end %>
+</div>
+</div>
 
 <div class="articles">
-    <h2>News</h2>
+    <h3>News</h3>
     <table>
       <tbody>
       <% @news.each do |news| %>
           <tr>
             <td valign="top">
-              <span class="sentiment"><%=news.sentiment_score%></span><br>
-              <a href="<%=news.url%>"><%=news.title%></a><br>
-              <span class="url"><%=news.url%></span><br>
-              <span class="source"><%=news.source%></span><br>
-              <span class="desc"><%=news.description%></span><br><br>
+              <strong><%=news.title%></strong><br>
+              <a href="<%=news.url%>"><%=news.url%></a><br>
+              <%=news.description%><br><br>
             </td>
           </tr>
         <% end %>
@@ -53,14 +101,15 @@
     </table> 
 </div>
 
-<div class="tweets">
-    <h2>Tweets</h2>
+<div class="row">
+<div class="tweets span6">
+    <h3>Tweets</h3>
     <table>
       <tbody>
       <% @tweets.each do |tweet| %>
           <tr>
             <td valign="top">
-              <span><%=tweet.sentiment_score%> <%=tweet.text%></span><br><br>
+              <strong>@<%=@player.twitter_handle%>: </strong><%=tweet.text%><br><br>
             </td>
           </tr>
         <% end %>
@@ -68,19 +117,20 @@
     </table> 
 </div>
 
-<div class="tweets">
-    <h2>Tweets About</h2>
+<div class="tweets_about span6">
+    <h3>Tweets About</h3>
     <table>
       <tbody>
       <% @tweet_abouts.each do |tweet| %>
           <tr>
             <td valign="top">
-              <span><%=tweet.sentiment_score%> <%=tweet.text%></span><br><br>
+              <strong>@<%=tweet.tweeted_by%></strong>: <%=tweet.text%><br><br>
             </td>
           </tr>
         <% end %>
       </tbody>
     </table> 
+</div>
 </div>
 
 <div class="form-actions">
