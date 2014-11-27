@@ -35,10 +35,32 @@ I used the 'nltk' package to perform Part-of-Speech tagging on each article. The
 
 For each player, I calculated a tf-idf score of each phrase to determine its importance. I stored this list to a database (along with various intermediate representations to make future calculations faster). The top 20 of these phrases are shown on the player profile page.
 
+This serves as a way for a GM to get a sense of what people are saying about a player without having to read through all of the articles.
+
 See:
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/chunk_news.py
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_keywords.py
 
+
 =======================
 Sentiment Analysis
 =======================
+Each english word (roughly) has a positive or negative connotation to it. With this in mind, dictionaries have been assembled matching english words to their sentiment scores. 
+
+For each tweet by/about a player and each news article, I calculate a sentiment score. Then, I take the mean across the set of tweets/news articles to get a composite score for each one. Finally, I compute the rank of that score with respect to the other players. Scores above 0 are positive and below 0 are negative.
+
+This serves two purposes:
+1. Summarize the general attitude of the media towards this player. Are they saying positive or negative things about this player in the news and on twitter?
+2. Get a sense of how positive the player himself is. A GM would want to know if a player has a bad attitude and could be trouble in the locker room. The sentiment score of the player's tweets gives a rough idea of how positive they are on social media.
+
+See:
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_sentiment.rb
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_player_sentiment.rb
+
+
+========================
+Future Work
+========================
+The first thing I would do if I extended this project would be to add in a time component. As the season goes on, people's opinion of these players rise and fall. It would be nice to see a graph over time of sentiment scores in the news and on twitter. I could also plot how frequency of keywords about a player trend over time.
+
+However, with only one week of data collection, these ideas don't make sense yet.
