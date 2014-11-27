@@ -8,9 +8,7 @@ group :development, :test do
     gem 'sqlite3'
 end
 
-group :production do
-    gem 'pg'
-end
+gem 'pg'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
@@ -41,6 +39,7 @@ gem "mechanize"
 gem "pry"
 gem "pismo", :git => "https://github.com/peterc/pismo.git"
 gem "sentimental"
+gem "faraday"
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
