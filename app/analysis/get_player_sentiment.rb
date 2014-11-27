@@ -11,7 +11,7 @@ def mean(arr)
     end
 end
 
-players = Player.where("players.news_sentiment is NULL").to_a
+players = Player.all.to_a
 
 players.each do |player|
     player.news_sentiment = mean(player.news.map {|n| n.sentiment_score})
