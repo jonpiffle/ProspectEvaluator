@@ -3,7 +3,6 @@ require 'open-uri'
 class News < ActiveRecord::Base
     belongs_to :player
     validates :url, uniqueness: true
-    after_create :scrape_html
 
     def scrape_html
         begin
