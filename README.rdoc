@@ -1,28 +1,17 @@
 == Prospect Evaluator
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Application to scrape and analyze data about the incoming 2015 NBA draft class. For each player the following is done:
 
-Things you may want to cover:
+* An initial profile is built from ESPN Insider
 
-* Ruby version
+* Their twitter handle is found from the twitter api
 
-* System dependencies
+* The 20 most recent news articles are scraped via the bing web api
 
-* Configuration
+* The 50 most recent tweets about the player are scraped
 
-* Database creation
+* The 50 most recent tweets by the player are scraped
 
-* Database initialization
+* Keywords are extracted from the news articles using POS tagging and tf-idf
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+* The player is given sentiment scores and ranks for news articles about them, tweets about them, and their own tweets
