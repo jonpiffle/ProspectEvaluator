@@ -1,0 +1,44 @@
+===========================
+Prospect Evaluator Overview
+===========================
+Site: https://prospectevaluator.herokuapp.com/
+Source: https://github.com/jonpiffle/ProspectEvaluator/
+
+My goal was to make a fully usable application that would aggregate and summarize data about draft prospects. I think getting a working demo is an important part of the software development process, so I would rather build a slimmed down prototype than a larger, but non-functional project.
+
+Given that, I setup a barebones Ruby on Rails application to serve as a simple front-end for a GM.
+
+I then wrote a web scraper to grab enough information from ESPN to setup a simple profile for each of the top 100 prospects (everything is stored in a postgres db).
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/scrapers/scrape_prospects.rb
+
+I then searched twitter for each players' twitter handle:
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_twitter_handles.py
+
+For each player, I got the following content:
+1. The 20 most recent articles written about the player, retrieved from the bing search api
+2. The 50 most recent tweets about that player, retrieved from the twitter search api
+3. The 50 most recent tweets by that player, retrieved from the twitter api
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/scrapers/bing_search.rb
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_tweets.py
+
+There were three major analyses I wanted to do on this data, which I will describe below:
+1. Keyword extraction from news articles to find the phrases that were frequently used to describe a player
+2. Sentiment analysis on news and tweets about a player to get a sense of the media's opinion
+3. Sentiment analysis of the player's own tweets to get a sense of how positive of a person the player is
+
+=======================
+Keyword Extraction
+=======================
+After getting the news links from the bing api, I stored the full html of each page in my database. I then used the 'pismo' gem to determine the text portion of the web page.
+
+I used the 'nltk' package to perform Part-of-Speech tagging on each article. Then, I retrieved each phrase following the form: 0 or more adjectives followed by 0 or more nouns. I built a dictionary of phrase counts for each player across his corpus of articles.
+
+For each player, I calculated a tf-idf score of each phrase to determine its importance. I stored this list to a database (along with various intermediate representations to make future calculations faster). The top 20 of these phrases are shown on the player profile page.
+
+See:
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/chunk_news.py
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_keywords.py
+
+=======================
+Sentiment Analysis
+=======================
