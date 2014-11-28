@@ -6,6 +6,9 @@ import enchant
 
 players = session.query(Player).all()    
 
+grammar = "NP: {<JJ>*<NN>*}"
+d = enchant.Dict("en_US")
+
 for player in players:
     for article in player.news:
         if article.body == "" or article.body is None or article.chunked_body is not None:

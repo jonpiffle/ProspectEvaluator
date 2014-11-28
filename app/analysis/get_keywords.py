@@ -2,11 +2,8 @@ from models import *
 from collections import defaultdict, Counter
 import nltk
 import math
-import enchant
 
 players = session.query(Player).all()
-grammar = "NP: {<JJ>*<NN>*}"
-d = enchant.Dict("en_US")
 
 nested_dict = {}
 idf_dict = defaultdict(int)
