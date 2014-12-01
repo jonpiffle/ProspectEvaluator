@@ -4,14 +4,12 @@ Prospect Evaluator Overview
 Site: https://prospectevaluator.herokuapp.com/
 Source: https://github.com/jonpiffle/ProspectEvaluator/
 
-My goal was to make a fully usable application that would aggregate and summarize data about draft prospects. I think getting a working demo is an important part of the software development process, so I would rather build a slimmed down prototype than a larger, but non-functional project.
+My goal was to make a fully usable application that would aggregate and summarize data about draft prospects. I think getting a working demo is an important part of the software development process. Given that, I setup a Ruby on Rails application to serve as a front-end for a GM.
 
-Given that, I setup a barebones Ruby on Rails application to serve as a simple front-end for a GM.
-
-I then wrote a web scraper to grab enough information from ESPN to setup a simple profile for each of the top 100 prospects (everything is stored in a postgres db).
+I wrote a web scraper to grab enough information from ESPN to setup a simple profile for each of the top 100 prospects (everything is stored in a postgres db).
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/scrapers/scrape_prospects.rb
 
-I then searched twitter for each players' twitter handle:
+I searched twitter for each players' twitter handle:
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_twitter_handles.py
 
 For each player, I got the following content:
@@ -22,25 +20,34 @@ https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/scrapers/bing_sea
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_tweets.py
 
 There were three major analyses I wanted to do on this data, which I will describe below:
-1. Keyword extraction from news articles to find the phrases that were frequently used to describe a player
-2. Sentiment analysis on news and tweets about a player to get a sense of the media's opinion
-3. Sentiment analysis of the player's own tweets to get a sense of how positive of a person the player is
+1. Keyword extraction from news articles to find the phrases that were frequently used to describe a player. The hope is that the content of the 20+ news articles can be summarized by frequent, meaningful key phrases. Then, a GM could build a mental profile of a player with minimal time investment (by reading through the list of key phrases).
+2. Sentiment analysis on news and tweets about a player. This score would give a general sense of how positive the buzz around a player is. This is built on the hypothesis that if a player is doing well, news and tweets about that player will generally contain more positive words and phrases than a player who is underperforming.
+3. Sentiment analysis of the player's own tweets. This score is supposed to represent how positive of a person the player is. The hypothesis is that happy, optimistic players will generally tweet out more positive sentiments than a negative, pessimistic player. No one
+wants locker room trouble, and a player's attitude is something that doesn't show up in a box score.
+
+The end-to-end scraping and analysis can be run via the following task (this could be schedule as a nightly job to always stay current):
+https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/update_data.rb
 
 =======================
 Keyword Extraction
 =======================
+Unsupervised extraction of keywords from arbitrary html pages was a non-trivial task. I used a combination of POS-tagging, regular expressions, and corpus-based filtering (tf-idf) to pull out player-specific phrases.
+
 After getting the news links from the bing api, I stored the full html of each page in my database. I then used the 'pismo' gem to determine the text portion of the web page.
 
 I used the 'nltk' package to perform Part-of-Speech tagging on each article. Then, I retrieved each phrase following the form: 0 or more adjectives followed by 0 or more nouns. I built a dictionary of phrase counts for each player across his corpus of articles.
 
-For each player, I calculated a tf-idf score of each phrase to determine its importance. I stored this list to a database (along with various intermediate representations to make future calculations faster). The top 20 of these phrases are shown on the player profile page.
-
-This serves as a way for a GM to get a sense of what people are saying about a player without having to read through all of the articles.
+For each player, I calculated a tf-idf score of each phrase to determine its importance. This filters out words that are common to each player ('basketball' was the most common noun phrase for most players. This is obviously not insightful.) I stored this list in a database (along with various intermediate representations to make future calculations faster). The top 20 of these phrases are shown on the player profile page.
 
 See:
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/chunk_news.py
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_keywords.py
 
+Looking at the results for the top two prospects:
+
+Jahlil Okafor -- Looking at the keywords, I can see that he came from a tough childhood where his mother died early; in spite of that, he's a dominant presence who has good moves inside and passes well. (This is based on the words "mother death", "mother", "father", "facilitator", "good moves", and "dominant presence").
+
+Emmanuel Mudiay -- we can see that there were obviously some strange circumstances with him trying to enter the NCAA ("speculation", "enroll", "eligibility", "amateurism"); almost none of the keywords surrounding him relate to his play on the court. As it turns out, he went to the CBA after eligibility problems in the NCAA.
 
 =======================
 Sentiment Analysis
@@ -57,10 +64,30 @@ See:
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_sentiment.rb
 https://github.com/jonpiffle/ProspectEvaluator/blob/master/app/analysis/get_player_sentiment.rb
 
+Results:
+Isaac Hamilton -- He has one of the lowest sentiment scores for his own tweets. Looking at his twitter feed we see:
+
+- @IsaacHam_4: Lol Social media is the devil dawg #sickworld
+- @IsaacHam_4: Smh I'm an idiot I just wasted 9 dollars trying eat healthy
+- @IsaacHam_4: If you don't floss your teeth you're nasty #period
+- @IsaacHam_4: 5 whole days with no phone is depressing
+- @IsaacHam_4: Lol sitting out a year sucks #needmyrhythmbac
+
+It appears he consistently tweets out negative thoughts. In contrast to this is someone like Jahlil Okafor:
+
+@BigJah15: S/O to my crazies! Gonna be a great season! http://t.co/GWRu94mpXN
+@BigJah15: Hope my crazies enjoyed themselves tonight. Love yall!
+@BigJah15: Back at it today. Good to get a chance to go home and see family and friends. Journey begins http://t.co/WRHaJtcrRE
+@BigJah15: S/O to the Duke football team with the big win today vs Georgia Tech! #Squad
+@BigJah15: Happy birthday big bruh! @realgranthill33 enjoy!
+
+He has a positive sentiment score for his twitter account, and seems to have a positive attitude on social media.
 
 ========================
 Future Work
 ========================
 The first thing I would do if I extended this project would be to add in a time component. As the season goes on, people's opinion of these players rise and fall. It would be nice to see a graph over time of sentiment scores in the news and on twitter. I could also plot how frequency of keywords about a player trend over time.
 
-However, with only one week of data collection, these ideas don't make sense yet.
+Additionally, data visualizations would make it easier to digest this data. Plots of where each player fell on "Internal Sentiment Score vs. External Sentiment Score" axes would make it easier to compare different players' sentiment.
+
+A search feature on the main page would also make it easier to filter players (although Ctrl+F works fine for now).
